@@ -1,4 +1,8 @@
+<%@ page import="org.example.classes.Result" %>
+<%@ page import="org.example.classes.SessionStorage" %>
+<%@ page import="java.util.ArrayList" %>
 <%@page contentType="text/html; charset=UTF-8" %>
+
 <html>
 <style>
     <%@include file="style.css" %>
@@ -25,8 +29,8 @@
 
                 <ellipse  cx="200" cy="200" rx="100" ry="100" style="fill:blue;fill-opacity:0.1" />
                 <polygon points="200,200 200,0 0,0 0,400 400,400 400,200" style="fill:white" />
-                <rect x="200" y="200" width="100" height="50" style="fill:blue;fill-opacity:0.1" />
-                <polygon points="200,200 200,100 100,200" style="fill:blue;fill-opacity:0.1" />
+                <rect x="100" y="150" width="100" height="50" style="fill:blue;fill-opacity:0.1" />
+                <polygon points="200,200 200,300 150,200" style="fill:blue;fill-opacity:0.1" />
 
                 <text x="133" y="190" class="graph-minus-r-2">-R/2</text>
                 <text x="300" y="190" class="graph-r">R</text>
@@ -40,6 +44,7 @@
 
                 <text x="210" y="50">y</text>
                 <text x="350" y="190">x</text>
+
 
 
 
@@ -87,7 +92,8 @@
                 </div>
             </div>
 
-<!--
+
+
             <div class="user-input">
                 <label>Координата Y:</label>
                 <div>
@@ -95,38 +101,15 @@
                     <div id="y-error" class="error-message"></div>
                 </div>
             </div>
--->
-<!--
+
             <div class="user-input">
-                <label>Координата Y (radio):</label>
-                <div id="y-radio-buttons">
-                    <label><input type="radio" name="radio-y" value="1">1</label>
-                    <label><input type="radio" name="radio-y" value="2">2</label>
-                    <label><input type="radio" name="radio-y" value="3">3</label>
+                <label>Координата R:</label>
+                <div>
+                    <input type="text" maxlength="10" id="text-r" name="r" placeholder="2...5">
+                    <div id="y-error" class="error-message"></div>
                 </div>
-                <div id="y-radio-error" class="error-message"></div>
-            </div>
--->
-            <div class="user-input">
-                <label>Выберите Y (checkbox)</label>
-                <label><input type="checkbox" name="checkbox-y" value="1">1</label>
-                <label><input type="checkbox" name="checkbox-y" value="2">2</label>
-                <label><input type="checkbox" name="checkbox-y" value="3">3</label>
             </div>
 
-
-            <div class="user-input">
-                <label>Параметр R:</label>
-                <table id="r-buttons" class="buttons">
-                    <tr>
-                        <th><button type="button" class="r-button" value="1">1</button></th>
-                        <th><button type="button" class="r-button" value="2">2</button></th>
-                        <th><button type="button" class="r-button" value="3">3</button></th>
-                        <th><button type="button" class="r-button" value="4">4</button></th>
-                        <th><button type="button" class="r-button" value="5">5</button></th>
-                    </tr>
-                </table>
-            </div>
 
 
 
@@ -153,6 +136,23 @@
                 </tr>
             </table>
             <table id="result_table" cellspacing="4" cellpadding="15" width="100%">
+            <%ArrayList<Result> list = SessionStorage.getList();%>
+                        <%for(Result result : list){%>
+                            <tr>
+                                <td>
+                                    <%= result.getX() %>
+                                </td>
+                                <td>
+                                    <%= result.getY() %>
+                                </td>
+                                <td>
+                                    <%= result.getR() %>
+                                </td>
+                                <td>
+                                    <%= result.getValue() %>
+                                </td>
+                            </tr>
+                        <%}%>
             </table>
         </div>
     </td>

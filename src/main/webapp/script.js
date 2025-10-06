@@ -1,75 +1,12 @@
 const xId = "text-x";
-const yId = "selected-y";
-const rId = "selected-r";
+const yId = "text-y";
+const rId = "text-r";
 
 
-
-//function xSelection(button) {
-//  document.querySelectorAll(".x-button").forEach((btn) => {
-//    btn.classList.remove("active");
-//  });
-//
-//  button.classList.add("active");
-//
-//  document.getElementById("selected-x").value = button.value;
-//
-//  document.getElementById("x-buttons").classList.remove("error");
-//}
-//
-//function ySelection(button) {
-//    document.querySelectorAll(".y-button").forEach((btn) => {
-//        btn.classList.remove("active");
-//    });
-//    button.classList.add("active");
-//    document.getElementById("selected-y").value = button.value;
-//    document.getElementById("y-buttons").classList.remove("error");
-//}
-
-function rSelection(button) {
-  document.querySelectorAll(".r-button").forEach((btn) => {
-    btn.classList.remove("active");
-  });
-  button.classList.add("active");
-  document.getElementById("selected-r").value = button.value;
-  document.getElementById("r-buttons").classList.remove("error");
-
-  const formError = document.getElementById("form-error");
-  if (formError) {
-      formError.textContent = "";
-      formError.style.display = "none";
-  }
-
-  changeR();
-}
-
-function yRadioSelection(button) {
-    document.getElementById("selected-y").value = button.value;
-
-    const yRadioError = document.getElementById("y-radio-error");
-    if (yRadioError) {
-        yRadioError.textContent = "";
-    }
-}
-function yCheckBoxSelection(checkbox) {
-    let selectedInput = document.getElementById("selected-y");
-    let selected = selectedInput.value ? selectedInput.value.split(',') : [];
-    const value = checkbox.value;
-
-    if (checkbox.checked) {
-        if (!selected.includes(value)) {
-            selected.push(value);
-        }
-    } else {
-        selected = selected.filter(item => item !== value);
-    }
-
-    // Сохраняем обратно как строку
-    document.getElementById("selected-y").value = selected.join(',');
-}
 
 function changeR(){
-    if (document.getElementById("selected-r").value !== "") {
-        const rValue = document.getElementById("selected-r").value;
+    if (document.getElementById(rId).value !== "") {
+        const rValue = document.getElementById(rId).value;
 
         document.querySelectorAll(".graph-r").forEach((sign) => {
             sign.textContent = rValue;
@@ -112,12 +49,6 @@ function drawPoints(points) {
         drawPoint(point.x, point.y, r, point.value);
     }
 }
-
-
-
-
-
-
 
 function resetForm() {
   document.querySelectorAll(".x-button, .y-button, .r-button").forEach((btn) => {
@@ -227,9 +158,9 @@ function validate(event) {
     let y = document.getElementById(yId);
     let r = document.getElementById(rId);
 
-    let validCodeX = ["X", validateText(x, -3, 3)];
-    let validCodeY = ["Y", validateCheckbox(y, ["1", "2", "3"])];
-    let validCodeR = ["R", validateBtn(r, ["1", "2", "3", "4", "5"])];
+    let validCodeX = ["X", validateText(x, -3, 5)];
+    let validCodeY = ["Y", validateText(y, -3, 5)];
+    let validCodeR = ["R", validateText(r, 2, 5)];
 
     let hasErrors = false;
     let errorMessages = [];
@@ -295,11 +226,14 @@ document.addEventListener("DOMContentLoaded", function () {
   //    });
   //});
 
-  document.getElementById("selected-r").addEventListener("change", function() {
+  document.getElementById(rId).addEventListener("change", function() {
       const tableData = getCookie(COOKIE_KEY);
       if (tableData && tableData.length > 0) {
           drawPoints(tableData);
       }
+      changeR();
+
+
   });
 
   document.querySelectorAll(".r-button").forEach((button) => {
@@ -325,35 +259,16 @@ document.addEventListener("DOMContentLoaded", function () {
       })
   })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   document
     .getElementById("coordinates")
     .addEventListener("submit", function (event) {
       event.preventDefault();
       if (validate(event)) {
-        //send(
-        //  document.getElementById(xId),
-        //  document.getElementById(yId),
-        //  document.getElementById(rId)
-        //);
-        sendWithCheckBox(
-          document.getElementById(xId),
-          document.getElementById(yId),
-          document.getElementById(rId)
-        )
+        send(
+         document.getElementById(xId),
+         document.getElementById(yId),
+         document.getElementById(rId)
+        );
       }
 
       validate(event);
@@ -398,174 +313,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-//function send(x, y, r) {
-//  start = performance.now();
-//  const data = JSON.stringify({ x: x.value, y: y.value, r: r.value });
-//
-//  console.log(data);
-//  fetch(
-//      `https://se.ifmo.ru/~s466342/proxy.php?x=${x.value}&y=${y.value.replace(/,/g, ".")}&r=${r.value}&source=form`,
-//    {
-//        mode: "cors",
-//      method: "GET",
-//    }
-//  ).then((response) => {
-//    response
-//      .json()
-//      .then((result) => {
-//        console.log("response accepted");
-//        console.log(result);
-//        showResponse(result);
-//      })
-//      .catch((error) => console.error("Error:", error));
-//  });
-//}
-//
-//function sendFromGraph(x, y, r) {
-//    start = performance.now();
-//    const data = JSON.stringify({x, y, r});
-//
-//    console.log(data);
-//    fetch(
-//        `https://se.ifmo.ru/~s466342/proxy.php?x=${x}&y=${y}&r=${r}&source=graph`,
-//        {
-//            mode: "cors",
-//            method: "GET",
-//        }
-//    ).then((response) => {
-//        response
-//            .json()
-//            .then((result) => {
-//                console.log("response accepted");
-//                console.log(result);
-//                showResponse(result);
-//            })
-//            .catch((error) => console.error("Error:", error));
-//    });
-//}
-//
-//function sendWithCheckBox(x, y, r) {
-//    start = performance.now();
-//
-//    const yValues = y.value ? y.value.split(',').filter(val => val !== '') : [];
-//
-//    yValues.forEach(yValue => {
-//        const data = JSON.stringify({
-//            x: x.value,
-//            y: yValue.replace(/,/g, "."),
-//            r: r.value
-//        });
-//
-//        console.log(data);
-//        fetch(
-//            `https://se.ifmo.ru/~s466342/proxy.php?x=${x.value}&y=${y.value.replace(/,/g, ".")}&r=${r.value}&source=form`,
-//            {
-//                mode: "cors",
-//                method: "GET",
-//            }
-//        ).then((response) => {
-//            response
-//                .json()
-//                .then((result) => {
-//                    console.log("response accepted");
-//                    console.log(result);
-//                    showResponse(result);
-//                })
-//                .catch((error) => console.error("Error:", error));
-//        });
-//    });
-//}
-
-// send POST
 function send(x, y, r) {
     start = performance.now();
-    const data = JSON.stringify({ x: x.value, y: y.value.replace(/,/g, "."), r: r.value, source: "form"});
 
-    console.log(data);
     fetch(
-        `https://se.ifmo.ru/~s466342/proxy.php`,
-        {
-            mode: "cors",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: data
+        `http://localhost:13121/labDVA/controller?x=${x.value}&y=${y.value.replace(/,/g, ".")}&r=${r.value}&source=form`, {
+        method: "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    ).then((response) => {
-        response
-            .json()
-            .then((result) => {
-                console.log("response accepted");
-                console.log(result);
-                showResponse(result);
-            })
-            .catch((error) => console.error("Error:", error));
+        return response.text();
+    })
+    .then((html) => {
+        console.log("HTML response received");
+        document.documentElement.innerHTML = html;
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        alert("Ошибка при получении данных");
     });
 }
 
 function sendFromGraph(x, y, r) {
-    start = performance.now();
-    const data = JSON.stringify({x, y, r, source: "form"});
+   start = performance.now();
+   const data = JSON.stringify({x, y, r});
 
-    console.log(data);
-    fetch(
-        `https://se.ifmo.ru/~s466342/proxy.php`,
-        {
-            mode: "cors",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: data
-        }
-    ).then((response) => {
-        response
-            .json()
-            .then((result) => {
-                console.log("response accepted");
-                console.log(result);
-                showResponse(result);
-            })
-            .catch((error) => console.error("Error:", error));
-    });
-}
-
-function sendWithCheckBox(x, y, r) {
-    start = performance.now();
-
-    const yValues = y.value ? y.value.split(',').filter(val => val !== '') : [];
-
-    yValues.forEach(yValue => {
-        const data = JSON.stringify({
-            x: x.value,
-            y: yValue.replace(/,/g, "."),
-            r: r.value,
-            source: "form"
-        });
-
-        console.log(data);
-        fetch(
-            `https://se.ifmo.ru/~s466342/proxy.php`,
-            {
-                mode: "cors",
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: data
-            }
-        ).then((response) => {
-            response
-                .json()
-                .then((result) => {
-                    console.log("response accepted");
-                    console.log(result);
-                    showResponse(result);
-                })
-                .catch((error) => console.error("Error:", error));
-        });
-    });
+   console.log(data);
+   fetch(
+       `http://localhost:13121/labDVA/controller?x=${x}&y=${y}&r=${r}&source=graph`,
+       {
+           mode: "cors",
+           method: "GET",
+       }
+   ).then((response) => {
+       if (!response.ok) {
+           throw new Error('Network response was not ok');
+       }
+       return response.text();
+   })
+       .then((html) => {
+           console.log("HTML response received");
+           document.documentElement.innerHTML = html;
+       })
+       .catch((error) => {
+           console.error("Error:", error);
+           alert("Ошибка при получении данных");
+       });
 }
 
 function showResponse(response) {
@@ -671,8 +466,6 @@ function loadTableFromCookie() {
             `;
             resultTable.appendChild(newRow);
         });
-
-
 
         console.log('Таблица загружена из куки:', tableData.length, 'строк');
 

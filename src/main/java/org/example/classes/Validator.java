@@ -5,20 +5,19 @@ import java.util.Arrays;
 
 public class Validator {
 
-    private static ArrayList<Float> possibleR = new ArrayList<Float>(Arrays.asList(1.f, 2.f, 3.f, 4.f, 5.f));
+
 
     public static boolean validateX(float x) {
-        return (x <= 3 && x >= -3);
+        return (x <= 5 && x >= -3);
     }
 
     public static boolean validateY(float y){
-        return (y <= 3 && y >= -3);
+        return (y <= 5 && y >= -3);
     }
 
     public static boolean validateR(float r){
-        return possibleR.contains(r);
+        return (r <= 5 && r >= 2);
     }
-
     public static boolean validateGraphY(float y){
         return (y <= 6 && y >= -6);
     }
