@@ -1,6 +1,6 @@
 package org.example.classes;
 
-public record Result(float x, float y, float r, boolean value) {
+public record Result(double x, double y, double r, boolean value) {
 
     @Override
     public String toString(){
@@ -10,15 +10,15 @@ public record Result(float x, float y, float r, boolean value) {
                 "\"value\":\"" + value + "\"}");
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public float getR() {
+    public double getR() {
         return r;
     }
 

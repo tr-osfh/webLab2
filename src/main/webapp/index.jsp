@@ -2,7 +2,19 @@
 <%@ page import="org.example.classes.SessionStorage" %>
 <%@ page import="java.util.ArrayList" %>
 <%@page contentType="text/html; charset=UTF-8" %>
+<%
+if ("GET".equalsIgnoreCase(request.getMethod()) &&
+    request.getParameter("clearTable") != null) {
 
+    HttpSession currentSession = request.getSession(false);
+    if (currentSession != null) {
+        SessionStorage.clear(currentSession);
+    }
+
+    response.sendRedirect("index.jsp");
+    return;
+}
+%>
 <html>
 <style>
     <%@include file="style.css" %>
@@ -87,7 +99,7 @@
             <div class="user-input">
                 <label>Координата X:</label>
                 <div>
-                    <input type="text" maxlength="10" id="text-x" name="x" placeholder="-3...3">
+                    <input type="text" maxlength="17" id="text-x" name="x" placeholder="-3...3">
                     <div id="x-error" class="error-message"></div>
                 </div>
             </div>
@@ -97,7 +109,7 @@
             <div class="user-input">
                 <label>Координата Y:</label>
                 <div>
-                    <input type="text" maxlength="10" id="text-y" name="y" placeholder="-3...3">
+                    <input type="text" maxlength="17" id="text-y" name="y" placeholder="-3...3">
                     <div id="y-error" class="error-message"></div>
                 </div>
             </div>
@@ -105,7 +117,7 @@
             <div class="user-input">
                 <label>Координата R:</label>
                 <div>
-                    <input type="text" maxlength="10" id="text-r" name="r" placeholder="2...5">
+                    <input type="text" maxlength="17" id="text-r" name="text-r" placeholder="2...5">
                     <div id="y-error" class="error-message"></div>
                 </div>
             </div>
@@ -122,7 +134,10 @@
     </th>
 
     <td width="70%" style="vertical-align: top; padding: 20px;">
-        <input type="button" id="deleteCookiesBtn" class="deleteBtn" value="Сбросить таблицу">
+        <form method="get" style="display: inline;">
+            <input type="hidden" name="clearTable" value="true">
+            <input type="submit" class="deleteBtn" value="Сбросить таблицу">
+        </form>
         <div class="table">
             <table cellspacing="4" cellpadding="15" width="100%">
                 <caption>
@@ -139,18 +154,10 @@
             <%ArrayList<Result> list = SessionStorage.getList();%>
                         <%for(Result result : list){%>
                             <tr>
-                                <td>
-                                    <%= result.getX() %>
-                                </td>
-                                <td>
-                                    <%= result.getY() %>
-                                </td>
-                                <td>
-                                    <%= result.getR() %>
-                                </td>
-                                <td>
-                                    <%= result.getValue() %>
-                                </td>
+                                <td width="25%"><%= result.getX() %></td>
+                                <td width="25%"><%= result.getY() %></td>
+                                <td width="25%"><%= result.getR() %></td>
+                                <td width="25%"><%= result.getValue() %></td>
                             </tr>
                         <%}%>
             </table>

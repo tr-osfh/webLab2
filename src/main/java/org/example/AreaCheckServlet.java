@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -23,9 +24,9 @@ public class AreaCheckServlet extends HttpServlet {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
 
-            float x = Float.parseFloat(req.getAttribute("x").toString());
-            float y = Float.parseFloat(req.getAttribute("y").toString());
-            float r = Float.parseFloat(req.getAttribute("r").toString());
+            double x = Double.parseDouble(req.getAttribute("x").toString());
+            double y = Double.parseDouble(req.getAttribute("y").toString());
+            double r = Double.parseDouble(req.getAttribute("r").toString());
             String source = req.getAttribute("source").toString();
 
             if (source.equals("form")){
@@ -38,7 +39,8 @@ public class AreaCheckServlet extends HttpServlet {
 
                     Result result = new Result(x, y, r, value);
 
-                    SessionStorage.add(result);
+                    SessionStorage.add(result, req.getSession());
+
 
                     var dispatcher = req.getRequestDispatcher("./result.jsp");
                     dispatcher.forward(req, resp);
@@ -55,7 +57,7 @@ public class AreaCheckServlet extends HttpServlet {
 
                     Result result = new Result(x, y, r, value);
 
-                    SessionStorage.add(result);
+                    SessionStorage.add(result, req.getSession());
 
                     var dispatcher = req.getRequestDispatcher("./result.jsp");
                     dispatcher.forward(req, resp);

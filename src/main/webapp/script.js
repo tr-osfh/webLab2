@@ -20,10 +20,34 @@ function changeR(){
         document.querySelectorAll(".graph-minus-r-2").forEach((sign) => {
             sign.textContent = "-" + (rValue / 2).toString();
         });
+
+        let tableData = getTableData();
+
+        drawPoints(tableData);
     }
 }
 
-function drawPoint(x, y, r, hit) {
+function getTableData() {
+    const table = document.getElementById("result_table");
+    const rows = table.getElementsByTagName('tr');
+    const data = [];
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        if (cells.length >= 4) {
+            data.push({
+                x: parseFloat(cells[0].textContent),
+                y: parseFloat(cells[1].textContent),
+                r: parseFloat(cells[2].textContent),
+                value: cells[3].textContent.trim().toLowerCase() === 'true'
+            });
+        }
+    }
+
+    return data;
+}
+
+function drawPoint(x, y, r, hit, isActiveR) {
     let svgPointX = (parseFloat(x) * 100 / r) + 200;
     let svgPointY = 200 - (parseFloat(y) * 100 / r);
     let svg = document.getElementById("graph");
@@ -31,7 +55,12 @@ function drawPoint(x, y, r, hit) {
     dot.setAttribute("cx", svgPointX.toString());
     dot.setAttribute("cy", svgPointY.toString());
     dot.setAttribute("r", "4");
-    dot.setAttribute("fill", hit === "true" ? "green" : "red");
+    if (isActiveR) {
+        dot.setAttribute("fill", hit ? "green" : "red");
+    } else {
+        dot.setAttribute("fill", "grey");
+    }
+
     svg.appendChild(dot);
 }
 
@@ -46,7 +75,11 @@ function drawPoints(points) {
 
     for (let i = 0; i < points.length; i++) {
         let point = points[i];
-        drawPoint(point.x, point.y, r, point.value);
+        if (point.r == r){
+            drawPoint(point.x, point.y, r, point.value, true);
+        } else {
+            drawPoint(point.x, point.y, r, point.value, false);
+        }
     }
 }
 
@@ -94,7 +127,7 @@ function resetForm() {
 
 function validateBtn(element, possibles){
     let x = element.value;
-    let availableX = possibles; // строки
+    let availableX = possibles;
 
     if (isNaN(x) || x === "" || x == undefined) {
         return "1"; // Выбирите значение
@@ -107,7 +140,7 @@ function validateBtn(element, possibles){
 
 function validateText(element, inf, sup){
     let x = element.value;
-    if (isNaN(x) || x === "") {
+    if (x === "") {
         return "1"; // Выбирите значение
     } else if (inf <= x && x <= sup) {
         return "0"; // все хорошо
@@ -196,51 +229,31 @@ document.getElementById("area").addEventListener("click", function (e) {
 
     const svgPoint = point.matrixTransform(document.getElementById('graph').getScreenCTM().inverse());
     let r = document.getElementById(rId);
-    if (r.value !== ""){
+    let valr = validateText(r, 2, 5);
+    const formError = document.getElementById("form-error");
+    if (valr === "0"){
         let userPointX = (((svgPoint.x - 200) / 100 * r.value).toFixed(2));
         let userPointY = (((200 - svgPoint.y) / 100 * r.value).toFixed(2));
         console.log(`Координаты на плоскости: x=${userPointX}, y=${userPointY}, Координаты в svg: (${svgPoint.x.toFixed(2)}, ${svgPoint.y.toFixed(2)}), r = ${r.value}`);
         sendFromGraph(userPointX, userPointY, r.value);
-    } else {
-        const formError = document.getElementById("form-error");
-        if (formError) {
-            formError.textContent = "";
-            formError.style.display = "none";
-        }
+        formError.style.display = "none";
+        formError.textContent = "";
+    } else if (valr === "1") {
+        formError.textContent = "Выберите значение R!"
         formError.style.display = "block";
-        formError.textContent = "Выбеrите паrаметr Rэ!";
+    } else {
+        formError.textContent = "Недопустимое значение для R!"
+        formError.style.display = "block";
     }
 
 })
 
+
 document.addEventListener("DOMContentLoaded", function () {
-  //document.querySelectorAll(".x-button").forEach((button) => {
-  //  button.addEventListener("click", function () {
-  //    xSelection(this);
-  //  });
-  //});
-
-  //document.querySelectorAll(".y-button").forEach((button) => {
-  //    button.addEventListener("click", function () {
-  //        ySelection(this);
-  //    });
-  //});
-
-  document.getElementById(rId).addEventListener("change", function() {
-      const tableData = getCookie(COOKIE_KEY);
-      if (tableData && tableData.length > 0) {
-          drawPoints(tableData);
-      }
-      changeR();
-
-
-  });
 
   document.querySelectorAll(".r-button").forEach((button) => {
       button.addEventListener("click", function() {
           rSelection(this);
-          // Перерисовываем точки после выбора R
-          const tableData = getCookie(COOKIE_KEY);
           if (tableData && tableData.length > 0) {
               drawPoints(tableData);
           }
@@ -253,9 +266,26 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
-  document.querySelectorAll('input[name="checkbox-y"]').forEach(checkbox => {
+  if (getCookie("r") !== undefined) {
+      document.getElementById(rId).value = getCookie("r");
+      changeR();
+  }
+
+  document.querySelectorAll('input[name="text-r"]').forEach(checkbox => {
       checkbox.addEventListener("change", function () {
-          yCheckBoxSelection(this);
+          const formError = document.getElementById("form-error");
+          let val = validateText(document.getElementById(rId), 2, 5);
+          if (val === "0"){
+              formError.style.display = "none";
+              setCookie("r", document.getElementById(rId).value, 30);
+              changeR();
+          } else if (val === "1") {
+              formError.textContent = "Выберите значение R!"
+              formError.style.display = "block";
+          } else {
+              formError.textContent = "Недопустимое значение для R!"
+              formError.style.display = "block";
+          }
       })
   })
 
@@ -274,20 +304,44 @@ document.addEventListener("DOMContentLoaded", function () {
       validate(event);
     });
 
-    document
-        .getElementById("deleteCookiesBtn")
-        .addEventListener("click", function (event) {
-            event.preventDefault();
-            deleteCookie(COOKIE_KEY);
-            document.getElementById("result_table").innerHTML = "";
-        });
+
 
   document
     .querySelector('input[type="reset"]')
     .addEventListener("click", resetForm);
 
-    loadTableFromCookie();
 });
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i].trim();
+        if (c.indexOf(nameEQ) === 0) {
+            const cookieValue = c.substring(nameEQ.length, c.length);
+            try {
+                return JSON.parse(decodeURIComponent(cookieValue));
+            } catch (e) {
+                console.error("Error parsing cookie:", e);
+                return [];
+            }
+        }
+    }
+    return [];
+}
+
+function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + encodeURIComponent(JSON.stringify(value)) + ";" + expires + ";path=/";
+}
+
+
+function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+}
 
 
 
@@ -332,7 +386,6 @@ function send(x, y, r) {
     })
     .catch((error) => {
         console.error("Error:", error);
-        alert("Ошибка при получении данных");
     });
 }
 
@@ -361,114 +414,4 @@ function sendFromGraph(x, y, r) {
            console.error("Error:", error);
            alert("Ошибка при получении данных");
        });
-}
-
-function showResponse(response) {
-  const resultTable = document.getElementById("result_table");
-  const newRow = document.createElement("tr");
-
-  newRow.innerHTML = `
-        <td width="25%">${response.x}</td>
-        <td width="25%">${response.y}</td>
-        <td width="25%">${response.r}</td>
-        <td width="25%">${response.value}</td>
-    `
-
-    if (resultTable.firstChild) {
-        resultTable.insertBefore(newRow, resultTable.firstChild);
-    } else {
-        resultTable.appendChild(newRow);
-    }
-
-    saveTableToCookie();
-
-    drawPoint(response.x, response.y, response.r, response.value);
-}
-
-
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i].trim();
-        if (c.indexOf(nameEQ) === 0) {
-            const cookieValue = c.substring(nameEQ.length, c.length);
-            try {
-                return JSON.parse(decodeURIComponent(cookieValue));
-            } catch (e) {
-                console.error("Error parsing cookie:", e);
-                return [];
-            }
-        }
-    }
-    return [];
-}
-
-
-
-function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + encodeURIComponent(JSON.stringify(value)) + ";" + expires + ";path=/";
-}
-
-
-function deleteCookie(name) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-}
-
-
-const COOKIE_KEY = 'savedResults';
-
-
-function saveTableToCookie() {
-    const resultTable = document.getElementById("result_table");
-    const rows = resultTable.querySelectorAll("tr");
-    const tableData = [];
-
-    for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].querySelectorAll("td");
-        if (cells.length === 4) {
-            tableData.push({
-                x: cells[0].textContent,
-                y: cells[1].textContent,
-                r: cells[2].textContent,
-                value: cells[3].textContent
-            });
-        }
-    }
-
-    setCookie(COOKIE_KEY, tableData, 30);
-    console.log('Таблица сохранена в куки');
-}
-
-
-
-function loadTableFromCookie() {
-    const tableData = getCookie(COOKIE_KEY);
-
-    if (tableData && tableData.length > 0) {
-        const resultTable = document.getElementById("result_table");
-
-        while (resultTable.rows.length > 1) {
-            resultTable.deleteRow(1);
-        }
-
-        tableData.forEach(rowData => {
-            const newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td width="15%">${rowData.x}</td>
-                <td width="15%">${rowData.y}</td>
-                <td width="10%">${rowData.r}</td>
-                <td width="20%">${rowData.value}</td>
-            `;
-            resultTable.appendChild(newRow);
-        });
-
-        console.log('Таблица загружена из куки:', tableData.length, 'строк');
-
-        drawPoints(tableData);
-    }
 }
