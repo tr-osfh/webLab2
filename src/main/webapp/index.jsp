@@ -11,7 +11,7 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
         SessionStorage.clear(currentSession);
     }
 
-    response.sendRedirect("index.jsp");
+    response.sendRedirect("index.php");
     return;
 }
 %>
@@ -134,7 +134,7 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
     </th>
 
     <td width="70%" style="vertical-align: top; padding: 20px;">
-        <form method="get" style="display: inline;">
+        <form method="get" action="proxy.php" style="display: inline;">
             <input type="hidden" name="clearTable" value="true">
             <input type="submit" class="deleteBtn" value="Сбросить таблицу">
         </form>

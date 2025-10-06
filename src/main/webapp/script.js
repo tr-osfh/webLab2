@@ -371,7 +371,7 @@ function send(x, y, r) {
     start = performance.now();
 
     fetch(
-        `http://localhost:13121/labDVA/controller?x=${x.value}&y=${y.value.replace(/,/g, ".")}&r=${r.value}&source=form`, {
+        `proxy.php?x=${x.value}&y=${y.value}&r=${r.value}&source=form`, {
         method: "GET",
     })
     .then((response) => {
@@ -395,7 +395,7 @@ function sendFromGraph(x, y, r) {
 
    console.log(data);
    fetch(
-       `http://localhost:13121/labDVA/controller?x=${x}&y=${y}&r=${r}&source=graph`,
+       `proxy.php?x=${x}&y=${y}&r=${r}&source=graph`,
        {
            mode: "cors",
            method: "GET",

@@ -45,7 +45,7 @@
 </div>
 
 <div class="button-container">
-    <button type="goback" class="data-button" value="1" onclick="window.location.href='/labDVA/';">
+    <button type="goback" class="data-button" value="1" onclick="window.location.href='/~s466342/';">
         Гет бэк
     </button>
 </div>
