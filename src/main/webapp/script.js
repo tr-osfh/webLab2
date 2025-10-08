@@ -184,7 +184,7 @@ function validateCheckbox(element, possibles){
 function validate(event) {
     const formError = document.getElementById("form-error");
 
-    formError.textContent = ""; // Очищаем предыдущие ошибки
+    formError.textContent = "";
     formError.style.display = "none";
 
     let x = document.getElementById(xId);
@@ -327,7 +327,7 @@ function getCookie(name) {
             }
         }
     }
-    return [];
+    return false;
 }
 
 function setCookie(name, value, days) {

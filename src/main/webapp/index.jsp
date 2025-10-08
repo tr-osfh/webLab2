@@ -151,15 +151,22 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
                 </tr>
             </table>
             <table id="result_table" cellspacing="4" cellpadding="15" width="100%">
-            <%ArrayList<Result> list = SessionStorage.getList();%>
-                        <%for(Result result : list){%>
-                            <tr>
-                                <td width="25%"><%= result.getX() %></td>
-                                <td width="25%"><%= result.getY() %></td>
-                                <td width="25%"><%= result.getR() %></td>
-                                <td width="25%"><%= result.getValue() %></td>
-                            </tr>
-                        <%}%>
+            <%
+                HttpSession currentSession = request.getSession(false);
+                ArrayList<Result> list = new ArrayList<>();
+
+                if (currentSession != null) {
+                list = SessionStorage.getList(currentSession);
+                }
+            %>
+            <% for(Result result : list) { %>
+            <tr>
+                <td width="25%"><%= result.getX() %></td>
+                <td width="25%"><%= result.getY() %></td>
+                <td width="25%"><%= result.getR() %></td>
+                <td width="25%"><%= result.getValue() %></td>
+            </tr>
+            <% } %>
             </table>
         </div>
     </td>
@@ -170,3 +177,5 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
 <script src="link.js"></script>
 </body>
 </html>
+
+

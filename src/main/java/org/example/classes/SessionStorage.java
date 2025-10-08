@@ -5,23 +5,32 @@ import java.util.ArrayList;
 
 public class SessionStorage {
 
-    private static ArrayList<Result> storage = new ArrayList<>();
-
-    public static void add(Result result, HttpSession session){
+    public static void add(Result result, HttpSession session) {
+        ArrayList<Result> storage = getStorage(session);
         storage.add(0, result);
         session.setAttribute("savedResults", storage);
     }
 
-    public static Result receive(){
+    public static Result receive(HttpSession session) {
+        ArrayList<Result> storage = getStorage(session);
+        if (storage.isEmpty()) return null;
         return storage.get(0);
     }
 
-    public static ArrayList<Result> getList(){
-        return storage;
+    public static ArrayList<Result> getList(HttpSession session) {
+        return getStorage(session);
     }
 
     public static void clear(HttpSession session) {
-        storage.clear();
-        session.setAttribute("savedResults", storage);
+        session.setAttribute("savedResults", new ArrayList<Result>());
+    }
+
+    private static ArrayList<Result> getStorage(HttpSession session) {
+        ArrayList<Result> storage = (ArrayList<Result>) session.getAttribute("savedResults");
+        if (storage == null) {
+            storage = new ArrayList<>();
+            session.setAttribute("savedResults", storage);
+        }
+        return storage;
     }
 }
