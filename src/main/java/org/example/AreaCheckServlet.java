@@ -36,7 +36,6 @@ public class AreaCheckServlet extends HttpServlet {
                     req.setAttribute("y", y);
                     req.setAttribute("r", r);
                     req.setAttribute("value", value);
-                    req.setAttribute("session", req.getSession());
 
                     Result result = new Result(x, y, r, value);
 
@@ -55,7 +54,6 @@ public class AreaCheckServlet extends HttpServlet {
                     req.setAttribute("y", y);
                     req.setAttribute("r", r);
                     req.setAttribute("value", value);
-                    req.setAttribute("session", req.getSession());
 
                     Result result = new Result(x, y, r, value);
 

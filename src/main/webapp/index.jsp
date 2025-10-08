@@ -151,22 +151,26 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
                 </tr>
             </table>
             <table id="result_table" cellspacing="4" cellpadding="15" width="100%">
-            <%
-                HttpSession currentSession = request.getSession(false);
-                ArrayList<Result> list = new ArrayList<>();
-
-                if (currentSession != null) {
-                list = SessionStorage.getList(currentSession);
-                }
-            %>
-            <% for(Result result : list) { %>
+        <%
+            HttpSession currentSession = request.getSession(false);
+            ArrayList<Result> list = SessionStorage.getList(currentSession);
+            if (list != null && !list.isEmpty()) {
+                for(Result result : list) {
+        %>
             <tr>
                 <td width="25%"><%= result.getX() %></td>
                 <td width="25%"><%= result.getY() %></td>
                 <td width="25%"><%= result.getR() %></td>
-                <td width="25%"><%= result.getValue() %></td>
+                <td width="25%"><%= result.getValue()%></td>
             </tr>
-            <% } %>
+        <%
+                }
+            } else {
+        %>
+            <tr>
+                <td colspan="4" style="text-align: center;">Нет данных для отображения</td>
+            </tr>
+        <% } %>
             </table>
         </div>
     </td>

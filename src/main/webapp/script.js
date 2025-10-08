@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
-  if (getCookie("r") !== undefined) {
+  if (getCookie("r")) {
       document.getElementById(rId).value = getCookie("r");
       changeR();
   }

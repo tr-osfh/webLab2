@@ -33,13 +33,26 @@
             </tr>
         </table>
         <table id="result_table" cellspacing="4" cellpadding="15" width="100%">
-            <%Result result = SessionStorage.receive();%>
+                <%
+                    HttpSession currentSession = request.getSession(false);
+                    Result result = null;
+                    if (currentSession != null) {
+                        result = SessionStorage.receive(currentSession);
+                    }
+
+                    if (result != null) {
+                %>
                 <tr>
                     <td width="25%"><%= result.getX() %></td>
                     <td width="25%"><%= result.getY() %></td>
                     <td width="25%"><%= result.getR() %></td>
                     <td width="25%"><%= result.getValue() %></td>
                 </tr>
+                <% } else { %>
+                <tr>
+                    <td colspan="4" style="text-align: center;">Нет данных для отображения</td>
+                </tr>
+                <% } %>
         </table>
     </div>
 </div>
