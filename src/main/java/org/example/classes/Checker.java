@@ -1,18 +1,29 @@
 package org.example.classes;
 
+import java.math.BigDecimal;
+
 public class Checker {
 
-    public static boolean check(double x, double y, double r){
-        if (x >= 0 && y >= 0){ // вп
-            return Math.pow(x, 2) + Math.pow(y, 2) <= Math.pow(r, 2);
-        } else if (x <= 0 && y <= 0) { // нп
-            return (y >= (-2 * x - r - (1e-10))) && (x >= -r/2.0) && (y >= -r);
-        } else if (x <= 0 && y >= 0){ //вл
-            return (y <= r / 2.0f && x <= r);
-        } else if (x > 0 && y < 0){ //нл
-            return false;
-        } else{
+    public static boolean check(BigDecimal x, BigDecimal y, BigDecimal r) {
+
+        if (x.compareTo(BigDecimal.ZERO) >= 0 && y.compareTo(BigDecimal.ZERO) >= 0) {
+            return x.multiply(x).add(y.multiply(y)).compareTo(r.multiply(r)) <= 0;
+        }
+
+        else if (x.compareTo(BigDecimal.ZERO) <= 0 && y.compareTo(BigDecimal.ZERO) <= 0) {
+            return y.compareTo(new BigDecimal("-2").multiply(x).subtract(r)) >= 0 &&
+                    x.compareTo(r.divide(new BigDecimal("2")).negate()) >= 0 &&
+                    y.compareTo(r.negate()) >= 0;
+        }
+
+        else if (x.compareTo(BigDecimal.ZERO) <= 0 && y.compareTo(BigDecimal.ZERO) >= 0) {
+            return y.compareTo(r.divide(new BigDecimal("2"))) <= 0 &&
+                    x.compareTo(r.negate()) >= 0;
+        }
+
+        else {
             return false;
         }
     }
 }
+

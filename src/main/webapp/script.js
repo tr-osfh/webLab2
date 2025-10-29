@@ -47,7 +47,9 @@ function getTableData() {
     return data;
 }
 
-function drawPoint(x, y, r, hit, isActiveR) {
+function drawPoint(x, y, r, hit) {
+
+
     let svgPointX = (parseFloat(x) * 100 / r) + 200;
     let svgPointY = 200 - (parseFloat(y) * 100 / r);
     let svg = document.getElementById("graph");
@@ -55,11 +57,7 @@ function drawPoint(x, y, r, hit, isActiveR) {
     dot.setAttribute("cx", svgPointX.toString());
     dot.setAttribute("cy", svgPointY.toString());
     dot.setAttribute("r", "4");
-    if (isActiveR) {
-        dot.setAttribute("fill", hit ? "green" : "red");
-    } else {
-        dot.setAttribute("fill", "grey");
-    }
+    dot.setAttribute("fill", hit ? "green" : "red");
 
     svg.appendChild(dot);
 }
@@ -76,9 +74,7 @@ function drawPoints(points) {
     for (let i = 0; i < points.length; i++) {
         let point = points[i];
         if (point.r == r){
-            drawPoint(point.x, point.y, r, point.value, true);
-        } else {
-            drawPoint(point.x, point.y, r, point.value, false);
+            drawPoint(point.x, point.y, r, point.value);
         }
     }
 }
@@ -100,9 +96,6 @@ function resetForm() {
   yInput.value = "";
   yInput.classList.remove("error");
 
-  //const rInput = document.getElementById("text-r");
-  //rInput.value = "";
-  //rInput.classList.remove("error");
 
   const yError = document.getElementById("y-error");
   if (yError) {
@@ -140,14 +133,19 @@ function validateBtn(element, possibles){
 
 function validateText(element, inf, sup){
     let x = element.value;
+
+    x = x.replace(',', '.');
+    element.value = x;
+
     if (x === "") {
-        return "1"; // Выбирите значение
-    } else if (inf <= x && x <= sup) {
-        return "0"; // все хорошо
-    } else {
+        return "1"; // Выберите значение
+    } else if (x[0] < inf || x[0] > sup){
         return "2"; // недопустимое значение
+    } else if (x >= inf && x <= sup) {
+        return "0"; // все хорошо
     }
 }
+
 
 function validateRadio(element, possibles) {
     let x = element.value;
@@ -192,7 +190,7 @@ function validate(event) {
     let r = document.getElementById(rId);
 
     let validCodeX = ["X", validateText(x, -3, 5)];
-    let validCodeY = ["Y", validateText(y, -3, 5)];
+    let validCodeY = ["Y", validateText(y, -3, 3)];
     let validCodeR = ["R", validateText(r, 2, 5)];
 
     let hasErrors = false;
@@ -371,7 +369,7 @@ function send(x, y, r) {
     start = performance.now();
 
     fetch(
-        `proxy.php?x=${x.value}&y=${y.value}&r=${r.value}&source=form`, {
+        `/labDVA/controller?x=${x.value}&y=${y.value}&r=${r.value}&source=form`, {
         method: "GET",
     })
     .then((response) => {
@@ -382,10 +380,9 @@ function send(x, y, r) {
     })
     .then((html) => {
         console.log("HTML response received");
-        document.documentElement.innerHTML = html;
-    })
-    .catch((error) => {
-        console.error("Error:", error);
+    document.open();
+    document.write(html);
+    document.close();
     });
 }
 
@@ -393,9 +390,13 @@ function sendFromGraph(x, y, r) {
    start = performance.now();
    const data = JSON.stringify({x, y, r});
 
+   x = x.toString().replace(',', '.');
+   y = y.toString().replace(',', '.');
+   r = r.toString().replace(',', '.');
+
    console.log(data);
    fetch(
-       `proxy.php?x=${x}&y=${y}&r=${r}&source=graph`,
+       `/labDVA/controller?x=${x}&y=${y}&r=${r}&source=graph`,
        {
            mode: "cors",
            method: "GET",
@@ -408,10 +409,6 @@ function sendFromGraph(x, y, r) {
    })
        .then((html) => {
            console.log("HTML response received");
-           document.documentElement.innerHTML = html;
-       })
-       .catch((error) => {
-           console.error("Error:", error);
-           alert("Ошибка при получении данных");
+           location.reload();
        });
 }

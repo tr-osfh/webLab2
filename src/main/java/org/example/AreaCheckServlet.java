@@ -1,9 +1,6 @@
 package org.example;
 
-import org.example.classes.Checker;
-import org.example.classes.Result;
-import org.example.classes.SessionStorage;
-import org.example.classes.Validator;
+import org.example.classes.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 
 
@@ -21,13 +19,12 @@ public class AreaCheckServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
+        try{
+        BigDecimal x = (BigDecimal) req.getAttribute("x");
+        BigDecimal y = (BigDecimal) req.getAttribute("y");
+        BigDecimal r = (BigDecimal) req.getAttribute("r");
+        String source = (String) req.getAttribute("source");
 
-            double x = Double.parseDouble(req.getAttribute("x").toString());
-            double y = Double.parseDouble(req.getAttribute("y").toString());
-            double r = Double.parseDouble(req.getAttribute("r").toString());
-            String source = req.getAttribute("source").toString();
 
             if (source.equals("form")){
                 if (Validator.validateX(x) && Validator.validateY(y) && Validator.validateR(r)) {

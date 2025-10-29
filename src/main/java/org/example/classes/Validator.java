@@ -1,5 +1,6 @@
 package org.example.classes;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,22 +8,29 @@ public class Validator {
 
 
 
-    public static boolean validateX(double x) {
-        return (x <= 5 && x >= -3);
+
+    public static boolean validateX(BigDecimal x) throws OutOfRangeException{
+        return (x.compareTo(new BigDecimal("-3")) >= 0 &&
+                x.compareTo(new BigDecimal("5")) <= 0);
     }
 
-    public static boolean validateY(double y){
-        return (y <= 5 && y >= -3);
+    public static boolean validateY(BigDecimal y) {
+        return (y.compareTo(new BigDecimal("-3")) >= 0 &&
+                y.compareTo(new BigDecimal("3")) <= 0);
     }
 
-    public static boolean validateR(double r){
-        return (r <= 5 && r >= 2);
-    }
-    public static boolean validateGraphY(double y){
-        return (y <= 6 && y >= -6);
+    public static boolean validateR(BigDecimal r) {
+        return (r.compareTo(new BigDecimal("2")) >= 0 &&
+                r.compareTo(new BigDecimal("5")) <= 0);
     }
 
-    public static boolean validateGraphX(double x){
-        return (x <= 6 && x >= -6);
+    public static boolean validateGraphY(BigDecimal y) {
+        return (y.compareTo(new BigDecimal("-6")) >= 0 &&
+                y.compareTo(new BigDecimal("6")) <= 0);
+    }
+
+    public static boolean validateGraphX(BigDecimal x) {
+        return (x.compareTo(new BigDecimal("-6")) >= 0 &&
+                x.compareTo(new BigDecimal("6")) <= 0);
     }
 }

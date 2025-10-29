@@ -23,37 +23,7 @@ if ($method === 'GET') {
             ]
         ]));
 
-        $mainUrl = $TARGET_BASE . "/index.jsp";
-        if (isset($_SESSION['JSESSIONID'])) {
-            $mainUrl .= ';jsessionid=' . $_SESSION['JSESSIONID'];
-        }
-
-        $response = @file_get_contents($mainUrl, false, stream_context_create([
-            'http' => [
-                'header' => 'Cookie: JSESSIONID=' . ($_SESSION['JSESSIONID'] ?? '')
-            ]
-        ]));
-
-        if ($response !== FALSE) {
-            if (isset($http_response_header)) {
-                foreach ($http_response_header as $header) {
-                    if (preg_match('/^Set-Cookie:\s*JSESSIONID=([^;]+)/i', $header, $matches)) {
-                        $_SESSION['JSESSIONID'] = $matches[1];
-                        break;
-                    }
-                }
-            }
-
-            $response = str_replace(
-                'http://localhost:13121/labDVA/',
-                'index.php?path=',
-                $response
-            );
-            echo $response;
-        } else {
-            http_response_code(500);
-            echo "Ошибка загрузки страницы после очистки";
-        }
+        header("Location: /~s466342/");
         exit;
     }
 
@@ -91,7 +61,7 @@ if ($method === 'GET') {
             if (strpos($response, '<html') !== false || strpos($response, '<!DOCTYPE') !== false) {
                 $response = str_replace(
                     'http://localhost:13121/labDVA/',
-                    'index.php?path=',
+                    '',
                     $response
                 );
             }
@@ -122,7 +92,7 @@ if ($method === 'GET') {
         if ($response !== FALSE) {
             $response = str_replace(
                 'http://localhost:13121/labDVA/',
-                'index.php?path=',
+                '',
                 $response
             );
             echo $response;

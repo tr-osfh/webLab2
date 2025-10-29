@@ -2,6 +2,7 @@
 <%@ page import="org.example.classes.Result" %>
 <%@ page import="org.example.classes.SessionStorage" %>
 <%@ page import="java.util.ArrayList" %>
+<%@page errorPage="excellentException.jsp"%>
 <html>
 <style>
     <%@include file="style.css"%>
@@ -15,7 +16,7 @@
 <header style="text-align: center">
     <div class="header">
         <h1>Лабораторная работа НОМЕР ДэВэАа</h1>
-        <h2>Красногорский Тимофей, Р3220 <br>Вариант какой Бог послал</h2>
+        <h2>Красногорский Тимофей, Р3220 <br>Вариант 2089</h2>
     </div>
 </header>
 
@@ -40,7 +41,9 @@
                         result = SessionStorage.receive(currentSession);
                     }
 
+
                     if (result != null) {
+
                 %>
                 <tr>
                     <td width="25%"><%= result.getX() %></td>
@@ -58,7 +61,7 @@
 </div>
 
 <div class="button-container">
-    <button type="goback" class="data-button" value="1" onclick="window.location.href='/~s466342/';">
+    <button type="goback" class="data-button" value="1" onclick="window.location.href='/labDVA/';">
         Гет бэк
     </button>
 </div>

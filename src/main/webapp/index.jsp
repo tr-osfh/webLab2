@@ -10,9 +10,6 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
     if (currentSession != null) {
         SessionStorage.clear(currentSession);
     }
-
-    response.sendRedirect("index.php");
-    return;
 }
 %>
 <html>
@@ -28,7 +25,7 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
         <th colspan="3">
             <div class="header">
                 <h1>Лабораторная работа НОМЕР ДэВэАа</h1>
-                <h2>Красногорский Тимофей, Р3220 <br>Вариант какой Бог послал</h2>
+                <h2>Красногорский Тимофей, Р3220 <br>Вариант 2089</h2>
             </div>
         </th>
     </tr>
@@ -99,7 +96,7 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
             <div class="user-input">
                 <label>Координата X:</label>
                 <div>
-                    <input type="text" maxlength="17" id="text-x" name="x" placeholder="-3...3">
+                    <input type="text" id="text-x" name="x" placeholder="-3...5">
                     <div id="x-error" class="error-message"></div>
                 </div>
             </div>
@@ -109,15 +106,15 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
             <div class="user-input">
                 <label>Координата Y:</label>
                 <div>
-                    <input type="text" maxlength="17" id="text-y" name="y" placeholder="-3...3">
+                    <input type="text" id="text-y" name="y" placeholder="-3...3">
                     <div id="y-error" class="error-message"></div>
                 </div>
             </div>
 
             <div class="user-input">
-                <label>Координата R:</label>
+                <label>Параметр R:</label>
                 <div>
-                    <input type="text" maxlength="17" id="text-r" name="text-r" placeholder="2...5">
+                    <input type="text" id="text-r" name="text-r" placeholder="2...5">
                     <div id="y-error" class="error-message"></div>
                 </div>
             </div>
@@ -178,7 +175,6 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
 
 
 <script src="script.js"></script>
-<script src="link.js"></script>
 </body>
 </html>
 

@@ -1,6 +1,8 @@
 package org.example.classes;
 
-public record Result(double x, double y, double r, boolean value) {
+import java.math.BigDecimal;
+
+public record Result(BigDecimal x, BigDecimal y, BigDecimal r, boolean value) {
 
     @Override
     public String toString(){
@@ -10,15 +12,15 @@ public record Result(double x, double y, double r, boolean value) {
                 "\"value\":\"" + value + "\"}");
     }
 
-    public double getX() {
+    public BigDecimal getX() {
         return x;
     }
 
-    public double getY() {
+    public BigDecimal getY() {
         return y;
     }
 
-    public double getR() {
+    public BigDecimal getR() {
         return r;
     }
 
