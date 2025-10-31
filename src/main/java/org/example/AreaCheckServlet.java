@@ -25,43 +25,29 @@ public class AreaCheckServlet extends HttpServlet {
         BigDecimal r = (BigDecimal) req.getAttribute("r");
         String source = (String) req.getAttribute("source");
 
+            boolean value = Checker.check(x, y, r);
 
-            if (source.equals("form")){
-                if (Validator.validateX(x) && Validator.validateY(y) && Validator.validateR(r)) {
-                    boolean value = Checker.check(x, y, r);
-                    req.setAttribute("x", x);
-                    req.setAttribute("y", y);
-                    req.setAttribute("r", r);
-                    req.setAttribute("value", value);
+            req.setAttribute("x", x);
+            req.setAttribute("y", y);
+            req.setAttribute("r", r);
+            req.setAttribute("value", value);
 
-                    Result result = new Result(x, y, r, value);
+            Result result = new Result(x, y, r, value);
+            SessionStorage.add(result, req.getSession());
 
-                    SessionStorage.add(result, req.getSession());
-
-
-                    var dispatcher = req.getRequestDispatcher("./result.jsp");
-                    dispatcher.forward(req, resp);
-                } else {
-                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Нужно было ставить запятые");
-                }
-            } else if (source.equals("graph")) {
-                if (Validator.validateR(r) && Validator.validateGraphX(x) && Validator.validateGraphY(y)){
-                    boolean value = Checker.check(x, y, r);
-                    req.setAttribute("x", x);
-                    req.setAttribute("y", y);
-                    req.setAttribute("r", r);
-                    req.setAttribute("value", value);
-
-                    Result result = new Result(x, y, r, value);
-
-                    SessionStorage.add(result, req.getSession());
-
-                    var dispatcher = req.getRequestDispatcher("./result.jsp");
-                    dispatcher.forward(req, resp);
-                }
+            if ("form".equals(source)){
+                req.getRequestDispatcher("./result.jsp").forward(req, resp);
             } else {
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Проблема с источником");
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
+
+                String json = String.format(
+                        "{\"x\": %s, \"y\": %s, \"r\": %s, \"result\": %s}",
+                        x, y, r, value
+                );
+                resp.getWriter().write(json);
             }
+
 
         } catch (Exception e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

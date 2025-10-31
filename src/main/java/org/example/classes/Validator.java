@@ -2,35 +2,35 @@ package org.example.classes;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Validator {
 
+    public static ArrayList<String> isAnyNull(String x, String y, String r, String type){
+        ArrayList<String> nulls = new ArrayList<>();
 
+        if (x.isEmpty() || x.isBlank() || x == null) nulls.add("x");
+        if (y.isEmpty() || y.isBlank() || y == null) nulls.add("y");
+        if (r.isEmpty() || r.isBlank() || r == null) nulls.add("r");
+        if (type.isEmpty() || type.isBlank() || type == null) nulls.add("type");
 
-
-    public static boolean validateX(BigDecimal x) throws OutOfRangeException{
-        return (x.compareTo(new BigDecimal("-3")) >= 0 &&
-                x.compareTo(new BigDecimal("5")) <= 0);
+        return nulls;
     }
 
-    public static boolean validateY(BigDecimal y) {
-        return (y.compareTo(new BigDecimal("-3")) >= 0 &&
-                y.compareTo(new BigDecimal("3")) <= 0);
+    public static ArrayList<String> validate(BigDecimal x, BigDecimal y, BigDecimal r, String type){
+        ArrayList<String> errors = new ArrayList<>();
+        if (!isInRange(r, 2, 5)) errors.add("r");
+        if (type.equals("form")){
+            if (!isInRange(x, -3, 5)) errors.add("x");
+            if (!isInRange(y, -3, 3)) errors.add("y");
+        } else {
+            if (!isInRange(x, -6, 6)) errors.add("x");
+            if (!isInRange(y, -6, 6)) errors.add("y");
+        }
+        return errors;
     }
 
-    public static boolean validateR(BigDecimal r) {
-        return (r.compareTo(new BigDecimal("2")) >= 0 &&
-                r.compareTo(new BigDecimal("5")) <= 0);
-    }
-
-    public static boolean validateGraphY(BigDecimal y) {
-        return (y.compareTo(new BigDecimal("-6")) >= 0 &&
-                y.compareTo(new BigDecimal("6")) <= 0);
-    }
-
-    public static boolean validateGraphX(BigDecimal x) {
-        return (x.compareTo(new BigDecimal("-6")) >= 0 &&
-                x.compareTo(new BigDecimal("6")) <= 0);
+    private static boolean isInRange(BigDecimal value, int min, int max) {
+        return value.compareTo(BigDecimal.valueOf(min)) >= 0 &&
+                value.compareTo(BigDecimal.valueOf(max)) <= 0;
     }
 }

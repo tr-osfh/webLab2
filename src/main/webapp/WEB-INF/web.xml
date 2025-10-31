@@ -35,14 +35,11 @@
 
     <error-page>
         <exception-type>org.example.classes.OutOfRangeException</exception-type>
-        <location>/excellentException.jsp</location>
+        <location>/outOfRangeException.jsp</location>
     </error-page>
+
     <error-page>
-        <error-code>500</error-code>
-        <location>/excellentException.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>400</error-code>
-        <location>/excellentException.jsp</location>
+        <exception-type>org.example.classes.NullValueException</exception-type>
+        <location>/outOfRangeException.jsp</location>
     </error-page>
 </web-app>

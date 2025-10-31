@@ -48,8 +48,6 @@ function getTableData() {
 }
 
 function drawPoint(x, y, r, hit) {
-
-
     let svgPointX = (parseFloat(x) * 100 / r) + 200;
     let svgPointY = 200 - (parseFloat(y) * 100 / r);
     let svg = document.getElementById("graph");
@@ -108,27 +106,9 @@ function resetForm() {
     formError.textContent = "";
     formError.style.display = "none";
   }
-  //const xButtons = document.getElementById("x-buttons");
-  //const yButtons = document.getElementById("x-buttons");
   const rButtons = document.getElementById("r-buttons");
-  //if (xButtons) xButtons.classList.remove("error");
-  //if (yButtons) xButtons.classList.remove("error");
   if (rButtons) rButtons.classList.remove("error");
 
-}
-
-
-function validateBtn(element, possibles){
-    let x = element.value;
-    let availableX = possibles;
-
-    if (isNaN(x) || x === "" || x == undefined) {
-        return "1"; // Выбирите значение
-    } else if (availableX.includes(x)) {
-        return "0";// все хорошо
-    } else {
-        return "2"; // недопустимое значение
-    }
 }
 
 function validateText(element, inf, sup){
@@ -145,79 +125,6 @@ function validateText(element, inf, sup){
         return "0"; // все хорошо
     }
 }
-
-
-function validateRadio(element, possibles) {
-    let x = element.value;
-    let availableX = possibles;
-
-    if (isNaN(x) || x === "" || x == undefined) {
-        return "1"; // Выбирите значение
-    } else if (availableX.includes(x)) {
-        return "0";// все хорошо
-    } else {
-        return "2"; // недопустимое значение
-    }
-}
-
-function validateCheckbox(element, possibles){
-    let x = element.value;
-
-    if (x === "" || x == undefined) {
-        return "1"; // Выберите значение
-    }
-
-    const selectedValues = x.split(',').filter(val => val !== '');
-
-    const invalidValues = selectedValues.filter(val => !possibles.includes(val));
-
-    if (invalidValues.length > 0) {
-        return "2"; // Недопустимое значение
-    } else {
-        return "0"; // Все хорошо
-    }
-}
-
-
-function validate(event) {
-    const formError = document.getElementById("form-error");
-
-    formError.textContent = "";
-    formError.style.display = "none";
-
-    let x = document.getElementById(xId);
-    let y = document.getElementById(yId);
-    let r = document.getElementById(rId);
-
-    let validCodeX = ["X", validateText(x, -3, 5)];
-    let validCodeY = ["Y", validateText(y, -3, 3)];
-    let validCodeR = ["R", validateText(r, 2, 5)];
-
-    let hasErrors = false;
-    let errorMessages = [];
-
-    let codes = [validCodeX, validCodeY, validCodeR];
-
-    for (let code of codes){
-        if (code[1] === "1"){
-            errorMessages.push(`Выберите значение ${code[0]}!`);
-            hasErrors = true;
-        } else if (code[1] === "2"){
-            errorMessages.push(`Недопустимое значение ${code[0]}!`);
-            hasErrors = true;
-        }
-    }
-
-    if (hasErrors) {
-        formError.textContent = errorMessages.join('\n');
-        formError.style.display = "block";
-        return false;
-    }
-
-    return true;
-}
-
-let start = performance.now();
 
 
 document.getElementById("area").addEventListener("click", function (e) {
@@ -269,41 +176,24 @@ document.addEventListener("DOMContentLoaded", function () {
       changeR();
   }
 
-  document.querySelectorAll('input[name="text-r"]').forEach(checkbox => {
-      checkbox.addEventListener("change", function () {
-          const formError = document.getElementById("form-error");
-          let val = validateText(document.getElementById(rId), 2, 5);
-          if (val === "0"){
-              formError.style.display = "none";
-              setCookie("r", document.getElementById(rId).value, 30);
-              changeR();
-          } else if (val === "1") {
-              formError.textContent = "Выберите значение R!"
-              formError.style.display = "block";
-          } else {
-              formError.textContent = "Недопустимое значение для R!"
-              formError.style.display = "block";
-          }
-      })
-  })
-
-  document
-    .getElementById("coordinates")
-    .addEventListener("submit", function (event) {
-      event.preventDefault();
-      if (validate(event)) {
-        send(
-         document.getElementById(xId),
-         document.getElementById(yId),
-         document.getElementById(rId)
-        );
-      }
-
-      validate(event);
+document.querySelectorAll('input[name="text-r"]').forEach(checkbox => {
+    checkbox.addEventListener("change", function () {
+        setCookie("r", document.getElementById(rId).value, 30);
+        changeR();
     });
+});
 
+document
+  .getElementById("coordinates")
+  .addEventListener("submit", function (event) {
+    event.preventDefault();
+      send(
+       document.getElementById(xId),
+       document.getElementById(yId),
+       document.getElementById(rId)
+      );
 
-
+  });
   document
     .querySelector('input[type="reset"]')
     .addEventListener("click", resetForm);
@@ -341,74 +231,83 @@ function deleteCookie(name) {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function send(x, y, r) {
     start = performance.now();
 
     fetch(
         `/labDVA/controller?x=${x.value}&y=${y.value}&r=${r.value}&source=form`, {
-        method: "GET",
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.text();
-    })
-    .then((html) => {
-        console.log("HTML response received");
-    document.open();
-    document.write(html);
-    document.close();
-    });
+            method: "GET",
+        })
+        .then((response) => {
+            return response.text().then(html => {
+                if (!response.ok) {
+                    console.log("Error HTML received");
+                    document.open();
+                    document.write(html);
+                    document.close();
+                    return;
+                }
+                console.log("HTML response received");
+                document.open();
+                document.write(html);
+                document.close();
+            });
+        })
+        .catch((error) => {
+            console.error('Network error:', error);
+            showError('Ошибка сети: ' + error.message);
+        });
 }
 
 function sendFromGraph(x, y, r) {
-   start = performance.now();
-   const data = JSON.stringify({x, y, r});
+    start = performance.now();
+    const data = JSON.stringify({x, y, r});
 
-   x = x.toString().replace(',', '.');
-   y = y.toString().replace(',', '.');
-   r = r.toString().replace(',', '.');
+    x = x.toString().replace(',', '.');
+    y = y.toString().replace(',', '.');
+    r = r.toString().replace(',', '.');
 
-   console.log(data);
-   fetch(
-       `/labDVA/controller?x=${x}&y=${y}&r=${r}&source=graph`,
-       {
-           mode: "cors",
-           method: "GET",
-       }
-   ).then((response) => {
-       if (!response.ok) {
-           throw new Error('Network response was not ok');
-       }
-       return response.text();
-   })
-       .then((html) => {
-           console.log("HTML response received");
-           location.reload();
-       });
+    console.log(data);
+    fetch(
+        `/labDVA/controller?x=${x}&y=${y}&r=${r}&source=graph`,
+        {
+            mode: "cors",
+            method: "GET",
+        }
+    ).then((response) => {
+        if (!response.ok) {
+            if (response.status === 500) {
+                return response.text().then(text => {
+                    const err = new DOMParser().parseFromString(text, "text/html");
+                    const txt = err.body.textContent
+                    throw new Error(txt);
+                })
+            }
+        }
+        return response.json();
+    })
+        .then(response => {
+            console.log(response);
+            showResponse(response);
+            drawPoint(response.x, response.y, response.r, response.result);
+        })
+}
+
+
+function showResponse(response) {
+    const resultTable = document.getElementById("result_table");
+    const newRow = document.createElement("tr");
+
+    newRow.innerHTML = `
+        <td width="25%">${response.x}</td>
+        <td width="25%">${response.y}</td>
+        <td width="25%">${response.r}</td>
+        <td width="25%">${response.result}</td>
+    `
+
+    if (resultTable.firstChild) {
+        resultTable.insertBefore(newRow, resultTable.firstChild);
+    } else {
+        resultTable.appendChild(newRow);
+    }
 }
