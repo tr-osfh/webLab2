@@ -10,6 +10,8 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
     if (currentSession != null) {
         SessionStorage.clear(currentSession);
     }
+    response.sendRedirect(request.getContextPath() + request.getServletPath());
+    return;
 }
 %>
 <html>
@@ -131,7 +133,7 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
     </th>
 
     <td width="70%" style="vertical-align: top; padding: 20px;">
-        <form method="get" action="proxy.php" style="display: inline;">
+        <form method="get" action="/labDVA/" style="display: inline;">
             <input type="hidden" name="clearTable" value="true">
             <input type="submit" class="deleteBtn" value="Сбросить таблицу">
         </form>
@@ -165,7 +167,7 @@ if ("GET".equalsIgnoreCase(request.getMethod()) &&
             } else {
         %>
             <tr>
-                <td colspan="4" style="text-align: center;">Нет данных для отображения</td>
+                <td id="no-result" colspan="4" style="text-align: center;">Нет данных для отображения</td>
             </tr>
         <% } %>
             </table>

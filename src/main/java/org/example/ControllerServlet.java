@@ -17,9 +17,9 @@ import java.util.ArrayList;
 public class ControllerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String xStr = req.getParameter("x");
-        String yStr = req.getParameter("y");
-        String rStr = req.getParameter("r");
+        String xStr = req.getParameter("x").replace(',', '.');
+        String yStr = req.getParameter("y").replace(',', '.');
+        String rStr = req.getParameter("r").replace(',', '.');
         String sourceStr = req.getParameter("source");
 
         ArrayList<String> nulls = Validator.isAnyNull(xStr, yStr, rStr, sourceStr);

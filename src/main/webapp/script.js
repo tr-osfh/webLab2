@@ -6,7 +6,7 @@ const rId = "text-r";
 
 function changeR(){
     if (document.getElementById(rId).value !== "") {
-        const rValue = document.getElementById(rId).value;
+        const rValue = document.getElementById(rId).value.replace(',', '.');
 
         document.querySelectorAll(".graph-r").forEach((sign) => {
             sign.textContent = rValue;
@@ -155,6 +155,7 @@ document.getElementById("area").addEventListener("click", function (e) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    drawPoints(getTableData());
 
   document.querySelectorAll(".r-button").forEach((button) => {
       button.addEventListener("click", function() {
@@ -295,6 +296,11 @@ function sendFromGraph(x, y, r) {
 
 
 function showResponse(response) {
+    try{
+        document.getElementById("no-result").style.display = "none";
+    } catch (error) {
+        console.log(error);
+    }
     const resultTable = document.getElementById("result_table");
     const newRow = document.createElement("tr");
 
